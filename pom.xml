@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.nick</groupId>
-    <artifactId>gemfire-spring-lab</artifactId>
+    <artifactId>tech-lab</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>gemfire-spring-lab</name>

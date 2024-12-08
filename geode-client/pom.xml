@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.nick</groupId>
-        <artifactId>gemfire-spring-lab</artifactId>
+        <artifactId>tech-lab</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>2.2.12.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.nick</groupId>
@@ -23,6 +23,8 @@
     </developers>
     <modules>
         <module>geode-client</module>
+        <module>geode-locator</module>
+        <module>geode-server</module>
     </modules>
     <scm>
         <connection/>
@@ -31,7 +33,7 @@
         <url/>
     </scm>
     <properties>
-        <java.version>23</java.version>
+        <java.version>8</java.version>
     </properties>
 
     <dependencies>

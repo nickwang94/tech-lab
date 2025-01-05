@@ -9,13 +9,11 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.nick.geode.client</groupId>
-    <artifactId>geode-client</artifactId>
+    <artifactId>geode-server</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-geode.version>1.2.12.RELEASE</spring-geode.version>
     </properties>
 
@@ -61,5 +59,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

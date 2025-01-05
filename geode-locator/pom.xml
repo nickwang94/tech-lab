@@ -9,8 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.nick.geode.client</groupId>
-    <artifactId>geode-client</artifactId>
+    <artifactId>geode-locator</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -43,6 +42,15 @@
             <groupId>org.springframework.geode</groupId>
             <artifactId>spring-geode-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.geode</groupId>
+            <artifactId>spring-geode-starter-session</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.geode</groupId>
+            <artifactId>spring-geode-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -61,5 +69,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

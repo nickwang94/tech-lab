@@ -1,10 +1,10 @@
-## Geode Learning
+## Geode Lab
 
-This repository is a **Spring Boot multi-module** sandbox for learning Apache Geode.
+This repository is a **Spring Boot multi-module** lab for learning Apache Geode.
 
 ### Modules
 
-- **`locator-learning`**: A Spring Boot application used to experiment with running an embedded Apache Geode Locator.
+- **`locator`**: A Spring Boot application used to experiment with running an embedded Apache Geode Locator.
 
 ### Repository conventions
 
@@ -20,11 +20,11 @@ This repository is a **Spring Boot multi-module** sandbox for learning Apache Ge
 ### Run the locator module
 
 ```bash
-./mvnw -pl locator-learning spring-boot:run
+./mvnw -pl locator spring-boot:run
 ```
 
 To start the app without actually starting a Geode Locator:
 
 ```bash
-./mvnw -pl locator-learning spring-boot:run -Dspring-boot.run.arguments="--geode.locator.enabled=false"
+./mvnw -pl locator spring-boot:run -Dspring-boot.run.arguments="--geode.locator.enabled=false"
 ```

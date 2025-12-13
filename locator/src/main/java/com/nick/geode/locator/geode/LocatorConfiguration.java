@@ -1,4 +1,4 @@
-package com.nick.geode.locatorlearning.geode;
+package com.nick.geode.locator.geode;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties(LocatorProperties.class)
-public class LocatorLearningConfiguration {
+public class LocatorConfiguration {
 
   @Bean
   public EmbeddedLocatorLifecycle embeddedLocatorLifecycle(LocatorProperties properties) {

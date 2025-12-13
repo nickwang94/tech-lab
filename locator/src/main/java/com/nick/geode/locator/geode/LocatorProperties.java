@@ -1,4 +1,4 @@
-package com.nick.geode.locatorlearning.geode;
+package com.nick.geode.locator.geode;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -21,7 +21,7 @@ public class LocatorProperties {
   /**
    * Geode member name.
    */
-  private String memberName = "locator-learning";
+  private String memberName = "locator";
 
   /**
    * Locator working directory (relative or absolute).

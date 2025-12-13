@@ -6,12 +6,12 @@
 
   <parent>
     <groupId>com.nick.geode</groupId>
-    <artifactId>geode-learning</artifactId>
+    <artifactId>geode-lab</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>locator-learning</artifactId>
-  <name>locator-learning</name>
+  <artifactId>locator</artifactId>
+  <name>locator</name>
   <description>Spring Boot module for Apache Geode Locator learning and experimentation.</description>
 
   <dependencies>

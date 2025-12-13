@@ -12,15 +12,15 @@
   </parent>
 
   <groupId>com.nick.geode</groupId>
-  <artifactId>geode-learning</artifactId>
+  <artifactId>geode-lab</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>geode-learning</name>
-  <description>Spring Boot multi-module sandbox for Apache Geode learning.</description>
+  <name>geode-lab</name>
+  <description>Spring Boot multi-module lab for Apache Geode learning.</description>
 
   <modules>
-    <module>locator-learning</module>
+    <module>locator</module>
   </modules>
 
   <properties>

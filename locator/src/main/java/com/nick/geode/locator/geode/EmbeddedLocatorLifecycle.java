@@ -1,4 +1,4 @@
-package com.nick.geode.locatorlearning.geode;
+package com.nick.geode.locator.geode;
 
 import org.apache.geode.distributed.LocatorLauncher;
 import org.springframework.context.SmartLifecycle;

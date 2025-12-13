@@ -1,59 +1,22 @@
-# Tech-Lab
+## Geode Learning Sandbox
 
-> Welcome to the Tech-Lab repository!
-> This project serves as a sandbox for exploring and learning various modern technologies and frameworks. 
-> The primary goal is to dive deep into diverse tech stacks, implement use cases, and understand their real-world applications.
+这个仓库已被“清空”并重建为一个 **Maven 多模块**骨架，用于后续学习 Apache Geode。
 
-## Technologies Covered
-1. Apache Pulsar
-- A distributed messaging and streaming platform.
-- Explore use cases such as real-time event processing, message queuing, and streaming data.  
+- **父工程**：`pom.xml`
+- **子模块**：`geode-learning/`（后续所有 Geode 相关实验代码建议放在这里，或在未来继续新增更多 module）
 
-2. Apache Geode / GemFire
-- A distributed in-memory data management platform.  
-- Hands-on with caching, high-performance data regions, and cluster management.  
+### 快速开始
 
-3. Spring Security
-- A powerful and customizable authentication and access control framework.  
-- Focused on securing applications with OAuth, JWT, and other authentication mechanisms.  
+- **编译/测试**：
 
-## Repository Objectives
-1. To serve as a reference guide for configuring and integrating the listed technologies. 
-2. To provide hands-on examples demonstrating best practices and real-world scenarios. 
-3. To build a strong understanding of the strengths, limitations, and use cases of each technology.
-
-## Getting Started
-
-### Prerequisites
-
-Ensure you have the following installed:
-- Java (Version 17 or above)
-- Maven or Gradle
-- Docker (Optional, for setting up local environments)
-
-Clone the Repository  
 ```bash
-git clone https://github.com/nickwang94/tech-lab.git  
-cd tech-lab 
+./mvnw test
 ```
 
-### Contents
-| Module | Description |
-| --- | --- |
-| Pulsar | Examples for setting up Apache Pulsar, creating topics, producers, and consumers. |
-| Geode/GemFire	 | Hands-on demos for setting up GemFire clusters, creating regions, and querying data. |
-| Spring Security | Guides for securing Spring Boot applications using various security patterns. |
+- **运行示例 main**：
 
-## Contributing
-> Contributions are welcome! Feel free to open an issue or submit a pull request if you have improvements or additional examples to share.
+```bash
+./mvnw -pl geode-learning exec:java
+```
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Contact
-For questions or feedback, reach out via:
-- GitHub Issues
-- Email: nick.wenkun.wang@outlook.com
-
-Happy coding! 🚀   
-Feel free to modify the content as needed!
+> 说明：当前仅提供最小可编译骨架（不依赖 locator/server），后续你可以在 `geode-learning` 里逐步加入 client/server/locator、region、query、security、WAN 等实验。

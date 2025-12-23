@@ -10,14 +10,14 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>locator</artifactId>
-  <name>locator</name>
-  <description>Spring Boot module for Apache Geode Locator learning and experimentation.</description>
+  <artifactId>data-server</artifactId>
+  <name>data-server</name>
+  <description>Spring Boot module for Apache Geode Data Server with RESTful API.</description>
 
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
+      <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
     <dependency>
@@ -72,3 +72,4 @@
     </plugins>
   </build>
 </project>
+

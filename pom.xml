@@ -21,6 +21,7 @@
 
   <modules>
     <module>locator</module>
+    <module>data-server</module>
   </modules>
 
   <properties>

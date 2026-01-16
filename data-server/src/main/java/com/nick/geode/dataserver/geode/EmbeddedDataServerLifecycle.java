@@ -1,6 +1,5 @@
 package com.nick.geode.dataserver.geode;
 
-import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheFactory;
 import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.distributed.ServerLauncher;

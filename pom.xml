@@ -22,6 +22,7 @@
   <modules>
     <module>locator</module>
     <module>data-server</module>
+    <module>data-browser</module>
   </modules>
 
   <properties>

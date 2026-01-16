@@ -20,9 +20,10 @@ A **Spring Boot multi-module** project for learning and experimenting with Apach
 This lab provides a complete Apache Geode setup with:
 
 - **Embedded Locator**: Service discovery and cluster coordination
-- **Data Server**: Distributed cache server with RESTful API
+- **Data Server**: Distributed cache server with management API
+- **Data Browser**: Web-based GUI for browsing and managing Geode cluster data
 - **Spring Boot Integration**: Automatic lifecycle management
-- **RESTful API**: Easy-to-use HTTP endpoints for cluster and data management
+- **RESTful APIs**: Easy-to-use HTTP endpoints for cluster and data management
 
 ## 🏗️ Architecture
 
@@ -34,17 +35,21 @@ This lab provides a complete Apache Geode setup with:
          │
          │ connects to
          │
-┌────────▼────────┐
-│  Data Server    │  ← Cache server with REST API
-│  (Port 8080)    │
-└─────────────────┘
+┌────────▼────────┐      ┌──────────────────┐
+│  Data Server    │◄─────┤  Data Browser    │
+│  (Port 8080)    │      │  (Port 8081)     │
+│                 │      │  - Web UI        │
+│  - Management   │      │  - REST API      │
+│    API          │      │  - Jetty Server  │
+└─────────────────┘      └──────────────────┘
 ```
 
 ### Component Flow
 
 1. **Locator** starts first and provides discovery service
-2. **Data Server** connects to Locator and joins the cluster
-3. **REST API** provides HTTP interface for operations
+2. **Data Server** connects to Locator and joins the cluster, provides management API
+3. **Data Browser** connects to Locator as a client and provides Web UI + REST API
+4. **Data Browser** calls Data Server's management API for region creation/deletion
 
 ## 📦 Modules
 
@@ -61,15 +66,29 @@ A Spring Boot application that runs an embedded Apache Geode Locator.
 
 ### `data-server` - Geode Data Server Module
 
-A Spring Boot application that provides an embedded Geode Data Server with RESTful API.
+A Spring Boot application that provides an embedded Geode Data Server with management API.
 
 **Key Features:**
 - Connects to Locator automatically
-- RESTful API for cluster management
-- Region CRUD operations
-- Data operations (put/get/delete)
+- Management API for region operations (create/delete)
+- Pure data server (no web interface)
 
 **See:** [data-server/README.md](data-server/README.md) for detailed documentation.
+
+### `data-browser` - Geode Data Browser Module
+
+A Spring Boot Web application (using Jetty) that provides a modern web interface for browsing and managing Geode cluster data.
+
+**Key Features:**
+- Web-based GUI similar to GemFire's native GUI
+- Cluster status visualization
+- Region browser and management
+- Data viewer with pagination
+- RESTful API for all operations
+- Connects to cluster via Locator (ClientCache)
+- Calls Data Server for region management operations
+
+**See:** [data-browser/README.md](data-browser/README.md) for detailed documentation.
 
 ## 📋 Prerequisites
 
@@ -99,34 +118,61 @@ In a **new terminal**:
 ./mvnw -pl data-server spring-boot:run
 ```
 
-The data server will connect to the locator and start the REST API on port 8080.
+The data server will connect to the locator and start the management API on port 8080.
 
-### 3. Test the API
+### 3. Start the Data Browser
+
+In a **new terminal**:
 
 ```bash
+./mvnw -pl data-browser spring-boot:run
+```
+
+The data browser will connect to the locator and start the web interface on port 8081.
+
+### 4. Access the Web Interface
+
+Open your browser and navigate to:
+```
+http://localhost:8081
+```
+
+You can now:
+- View cluster status and members
+- Browse regions
+- Create new regions (with type descriptions)
+- View and browse data in regions
+
+### 5. Test the APIs
+
+**Data Browser API (Port 8081):**
+```bash
 # Check cluster status
-curl http://localhost:8080/api/cluster/status
+curl http://localhost:8081/api/cluster/status
+
+# Get all regions
+curl http://localhost:8081/api/regions
 
 # Create a region
-curl -X POST "http://localhost:8080/api/regions/myRegion?type=PARTITION"
+curl -X POST "http://localhost:8081/api/regions/myRegion?type=PARTITION"
 
-# Put data
-curl -X PUT http://localhost:8080/api/data/myRegion/key1 \
-  -H "Content-Type: application/json" \
-  -d '{"value": "hello world"}'
+# Get region data
+curl http://localhost:8081/api/data/myRegion
+```
 
-# Get data
-curl http://localhost:8080/api/data/myRegion/key1
-
-# Get all keys in a region
-curl http://localhost:8080/api/data/myRegion
+**Data Server Management API (Port 8080):**
+```bash
+# Create a region (called by data-browser)
+curl -X POST "http://localhost:8080/management/regions/myRegion?type=PARTITION"
 ```
 
 ## 📚 API Documentation
 
-### Cluster Status
+### Data Browser API (Port 8081)
 
-#### `GET /api/cluster/status`
+#### Cluster Status
+
+**`GET /api/cluster/status`**
 
 Get cluster status and member information.
 
@@ -153,126 +199,63 @@ Get cluster status and member information.
 }
 ```
 
-### Region Management
+#### Region Management
 
-#### `GET /api/regions`
+**`GET /api/regions`**
 
-Get all region names in the cache.
+Get all region names.
 
-**Response:**
-```json
-["myRegion", "anotherRegion"]
-```
+**`GET /api/regions/info`**
 
-#### `GET /api/regions/{regionName}`
+Get all regions with metadata.
+
+**`GET /api/regions/{regionName}`**
 
 Get detailed information about a specific region.
 
-**Response:**
-```json
-{
-  "name": "myRegion",
-  "fullPath": "/myRegion",
-  "size": 10,
-  "attributes": "..."
-}
-```
+**`POST /api/regions/{regionName}?type=PARTITION`**
 
-#### `POST /api/regions/{regionName}?type=PARTITION`
-
-Create a new region.
+Create a new region. The request is forwarded to data-server.
 
 **Query Parameters:**
 - `type` (optional): Region type (default: `PARTITION`)
-  - Valid values: `PARTITION`, `REPLICATE`, `PARTITION_PERSISTENT`, `REPLICATE_PERSISTENT`, etc.
+  - Valid values: `PARTITION`, `REPLICATE`, `PARTITION_PERSISTENT`, `REPLICATE_PERSISTENT`, `PARTITION_REDUNDANT`, `REPLICATE_HEAP_LRU`, `PARTITION_HEAP_LRU`
 
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Region created successfully: myRegion",
-  "regionName": "myRegion"
-}
-```
-
-#### `DELETE /api/regions/{regionName}`
+**`DELETE /api/regions/{regionName}`**
 
 Delete a region.
 
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Region deleted successfully: myRegion"
-}
-```
+#### Data Operations
 
-### Data Operations
+**`GET /api/data/{regionName}`**
 
-#### `PUT /api/data/{regionName}/{key}`
+Get all data in a region (with pagination: `?limit=100&offset=0`).
 
-Store data in a region.
-
-**Request Body:**
-```json
-{
-  "value": "your value here"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Data put successfully",
-  "region": "myRegion",
-  "key": "key1"
-}
-```
-
-#### `GET /api/data/{regionName}/{key}`
-
-Retrieve data from a region.
-
-**Response:**
-```json
-{
-  "success": true,
-  "region": "myRegion",
-  "key": "key1",
-  "value": "hello world",
-  "exists": true
-}
-```
-
-#### `DELETE /api/data/{regionName}/{key}`
-
-Delete data from a region.
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Data deleted successfully",
-  "region": "myRegion",
-  "key": "key1",
-  "removedValue": "hello world"
-}
-```
-
-#### `GET /api/data/{regionName}`
+**`GET /api/data/{regionName}/keys`**
 
 Get all keys in a region.
 
-**Response:**
-```json
-{
-  "success": true,
-  "region": "myRegion",
-  "keys": ["key1", "key2", "key3"],
-  "size": 3
-}
-```
+**`GET /api/data/{regionName}/{key}`**
+
+Get a specific key-value pair.
+
+**`POST /api/data/{regionName}/{key}`**
+
+Put data into a region.
+
+**`DELETE /api/data/{regionName}/{key}`**
+
+Delete data from a region.
+
+### Data Server Management API (Port 8080)
+
+**`POST /management/regions/{regionName}?type=PARTITION`**
+
+Create a new region on the server.
+
+**`DELETE /management/regions/{regionName}`**
+
+Delete a region from the server.
 
 ## 💻 Development
 
@@ -292,6 +275,11 @@ Get all keys in a region.
    - Select "DataServerApplication" from run configuration dropdown
    - Click Run (or press `Shift+F10`)
 
+4. **Start Data Browser**
+   - Select "DataBrowserApplication" from run configuration dropdown
+   - Click Run (or press `Shift+F10`)
+   - Open browser to http://localhost:8081
+
 **Note:** JVM arguments for Java module system are pre-configured in the run configurations.
 
 ### Build and Test
@@ -306,6 +294,7 @@ Get all keys in a region.
 # Build specific module
 ./mvnw -pl locator clean install
 ./mvnw -pl data-server clean install
+./mvnw -pl data-browser clean install
 ```
 
 ### Running Without Geode
@@ -348,6 +337,18 @@ geode.dataserver.locator-port=10334
 server.port=8080
 ```
 
+### Data Browser Configuration
+
+Edit `data-browser/src/main/resources/application.properties`:
+
+```properties
+geode.browser.locator-host=localhost
+geode.browser.locator-port=10334
+geode.browser.member-name=data-browser
+geode.browser.data-server-url=http://localhost:8080
+server.port=8081
+```
+
 ### JVM Arguments
 
 For Java 21+, the following JVM arguments are required (already configured in `pom.xml` and IDEA run configurations):
@@ -377,6 +378,13 @@ For Java 21+, the following JVM arguments are required (already configured in `p
 2. Check `geode.dataserver.locator-host` and `geode.dataserver.locator-port` match Locator configuration
 3. Verify Locator is listening on the correct port: `netstat -an | grep 10334`
 
+### Issue: Data Browser cannot connect to Locator
+
+**Solutions:**
+1. Ensure Locator is running
+2. Check `geode.browser.locator-host` and `geode.browser.locator-port` match Locator configuration
+3. Verify Data Server is running (required for region management)
+
 ### Issue: `ClassCastException` with proxy classes
 
 **Solution:** This has been fixed in the current implementation. Services use `CacheFactory.getAnyInstance()` directly instead of injected beans.
@@ -390,10 +398,15 @@ For Java 21+, the following JVM arguments are required (already configured in `p
    # Find process
    lsof -i :10334  # for locator
    lsof -i :8080   # for data-server
+   lsof -i :8081   # for data-browser
    
    # Kill process
    kill -9 <PID>
    ```
+
+### Issue: Created region not showing in Data Browser
+
+**Solution:** The Data Browser automatically creates a PROXY region after creation. If it doesn't appear, try refreshing the regions list or check the browser console for errors.
 
 ## 📝 Repository Conventions
 
@@ -413,6 +426,16 @@ tech-lab/
 │   ├── src/
 │   ├── pom.xml
 │   └── README.md
+├── data-browser/         # Data Browser module
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   ├── resources/
+│   │   │   │   ├── static/    # CSS, JS
+│   │   │   │   └── templates/ # HTML templates
+│   │   │   └── ...
+│   ├── pom.xml
+│   └── README.md
 ├── .idea/
 │   └── runConfigurations/  # IDEA run configurations
 ├── pom.xml               # Parent POM
@@ -423,7 +446,7 @@ tech-lab/
 
 - [Apache Geode Documentation](https://geode.apache.org/docs/)
 - [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [Module-specific READMEs](locator/README.md) | [data-server/README.md](data-server/README.md)
+- [Module-specific READMEs](locator/README.md) | [data-server/README.md](data-server/README.md) | [data-browser/README.md](data-browser/README.md)
 
 ## 📄 License
 

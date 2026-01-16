@@ -10,19 +10,16 @@ import org.apache.geode.cache.RegionShortcut;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
- * Service for managing Geode regions.
+ * Service for managing Geode regions on the server side.
  */
 @Service
-public class RegionService {
+public class RegionManagementService {
 
   /**
-   * Get the cache instance directly from CacheFactory to avoid proxy issues.
+   * Get the cache instance directly from CacheFactory.
    */
   private Cache getCache() {
     try {
@@ -37,48 +34,7 @@ public class RegionService {
   }
 
   /**
-   * Get all region names in the cache.
-   */
-  public List<String> getAllRegionNames() {
-    Cache cache = getCache();
-    if (cache == null || cache.isClosed()) {
-      return List.of();
-    }
-    
-    Set<Region<?, ?>> regions = cache.rootRegions();
-    return regions.stream()
-        .map(Region::getName)
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * Get region information.
-   */
-  public Map<String, Object> getRegionInfo(String regionName) {
-    Map<String, Object> info = new HashMap<>();
-    
-    Cache cache = getCache();
-    if (cache == null || cache.isClosed()) {
-      info.put("error", "Cache is not available");
-      return info;
-    }
-
-    Region<?, ?> region = cache.getRegion(regionName);
-    if (region == null) {
-      info.put("error", "Region not found: " + regionName);
-      return info;
-    }
-
-    info.put("name", region.getName());
-    info.put("fullPath", region.getFullPath());
-    info.put("size", region.size());
-    info.put("attributes", region.getAttributes().toString());
-    
-    return info;
-  }
-
-  /**
-   * Create a new region.
+   * Create a new region on the server.
    */
   public Map<String, Object> createRegion(String regionName, String regionType) {
     Map<String, Object> result = new HashMap<>();
@@ -107,6 +63,7 @@ public class RegionService {
       result.put("success", true);
       result.put("message", "Region created successfully: " + regionName);
       result.put("regionName", region.getName());
+      result.put("regionType", shortcut.toString());
       
     } catch (RegionExistsException e) {
       result.put("success", false);
@@ -120,7 +77,7 @@ public class RegionService {
   }
 
   /**
-   * Delete a region.
+   * Delete a region from the server.
    */
   public Map<String, Object> deleteRegion(String regionName) {
     Map<String, Object> result = new HashMap<>();
@@ -170,4 +127,3 @@ public class RegionService {
     }
   }
 }
-

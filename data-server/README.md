@@ -1,29 +1,12 @@
 ## Data Server module (Apache Geode)
 
-This module is a **Spring Boot** application that provides an embedded Apache Geode Data Server with RESTful API.
+This module is a **Spring Boot** application that provides an embedded Apache Geode Data Server.
 
 ### Features
 
 - Embedded Geode Data Server that connects to a locator
-- RESTful API for cluster management, region operations, and data operations
 - Automatic lifecycle management with Spring Boot
-
-### RESTful API Endpoints
-
-#### Cluster Status
-- `GET /api/cluster/status` - Get cluster status and member information
-
-#### Region Management
-- `GET /api/regions` - Get all region names
-- `GET /api/regions/{regionName}` - Get region information
-- `POST /api/regions/{regionName}?type=PARTITION` - Create a new region
-- `DELETE /api/regions/{regionName}` - Delete a region
-
-#### Data Operations
-- `PUT /api/data/{regionName}/{key}` - Put data (Body: `{"value": "your value"}`)
-- `GET /api/data/{regionName}/{key}` - Get data by key
-- `DELETE /api/data/{regionName}/{key}` - Delete data by key
-- `GET /api/data/{regionName}` - Get all keys in a region
+- Pure data server without web interface (use `data-browser` module for UI and API access)
 
 ### Configuration
 
@@ -36,7 +19,6 @@ Available properties:
 - **`geode.dataserver.working-dir`**: working directory (default: `target/data-server`)
 - **`geode.dataserver.locator-host`**: locator host (default: `localhost`)
 - **`geode.dataserver.locator-port`**: locator port (default: `10334`)
-- **`server.port`**: web server port (default: `8080`)
 
 ### Run in IntelliJ IDEA
 
@@ -53,7 +35,7 @@ Available properties:
 3. **Start Data Server**:
    - Select "DataServerApplication" from the run configuration dropdown
    - Click Run (or press Shift+F10)
-   - The data server will connect to the locator and start the REST API on port 8080
+   - The data server will connect to the locator and join the cluster
 
 ### Run from Command Line
 
@@ -67,28 +49,12 @@ From repository root:
 ./mvnw -pl data-server spring-boot:run
 ```
 
-### Test the API
+### Accessing the Data Server
 
-Once both services are running:
-
-```bash
-# Check cluster status
-curl http://localhost:8080/api/cluster/status
-
-# Create a region
-curl -X POST "http://localhost:8080/api/regions/myRegion?type=PARTITION"
-
-# Put data
-curl -X PUT http://localhost:8080/api/data/myRegion/key1 \
-  -H "Content-Type: application/json" \
-  -d '{"value": "hello world"}'
-
-# Get data
-curl http://localhost:8080/api/data/myRegion/key1
-
-# Get all keys
-curl http://localhost:8080/api/data/myRegion
-```
+To access the data server and browse data, use the **data-browser** module which provides:
+- Web UI for browsing cluster, regions, and data
+- RESTful API for all operations
+- Runs on port 8081 by default
 
 ### Notes
 

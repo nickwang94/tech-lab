@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GemFire Data Browser</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>GemFire Data Browser</h1>
+            <div class="cluster-status" id="clusterStatus">
+                <span class="status-indicator" id="statusIndicator"></span>
+                <span id="statusText">Connecting...</span>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-button active" data-tab="cluster">Cluster</button>
+            <button class="tab-button" data-tab="regions">Regions</button>
+            <button class="tab-button" data-tab="data">Data</button>
+        </nav>
+
+        <main>
+            <!-- Cluster Tab -->
+            <div class="tab-content active" id="clusterTab">
+                <div class="card">
+                    <h2>Cluster Information</h2>
+                    <div id="clusterInfo">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regions Tab -->
+            <div class="tab-content" id="regionsTab">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Regions</h2>
+                        <button class="btn-primary" id="createRegionBtn">Create Region</button>
+                    </div>
+                    <div id="regionsList">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Tab -->
+            <div class="tab-content" id="dataTab">
+                <div class="card">
+                    <h2>Browse Data</h2>
+                    <div class="data-controls">
+                        <select id="regionSelect">
+                            <option value="">Select Region...</option>
+                        </select>
+                        <button id="loadDataBtn">Load Data</button>
+                        <button id="refreshBtn">Refresh</button>
+                    </div>
+                    <div id="dataContent">
+                        <p>Please select a Region to view data</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Region Modal -->
+    <div id="createRegionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Region</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="createRegionForm">
+                    <div class="form-group">
+                        <label for="regionName">Region Name:</label>
+                        <input type="text" id="regionName" name="regionName" required 
+                               placeholder="Enter region name" pattern="[A-Za-z0-9_]+">
+                        <small>Only letters, numbers, and underscores allowed</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="regionType">Region Type:</label>
+                        <select id="regionType" name="regionType">
+                            <option value="PARTITION" data-desc="Partitioned region - data is distributed across servers">PARTITION</option>
+                            <option value="REPLICATE" data-desc="Replicated region - data is copied to all servers">REPLICATE</option>
+                            <option value="PARTITION_PERSISTENT" data-desc="Partitioned with persistence - data is distributed and persisted to disk">PARTITION_PERSISTENT</option>
+                            <option value="REPLICATE_PERSISTENT" data-desc="Replicated with persistence - data is copied to all servers and persisted">REPLICATE_PERSISTENT</option>
+                            <option value="PARTITION_REDUNDANT" data-desc="Partitioned with redundancy - data is distributed with backup copies">PARTITION_REDUNDANT</option>
+                            <option value="REPLICATE_HEAP_LRU" data-desc="Replicated with LRU eviction - data is replicated and evicted when memory limit is reached">REPLICATE_HEAP_LRU</option>
+                            <option value="PARTITION_HEAP_LRU" data-desc="Partitioned with LRU eviction - data is distributed and evicted when memory limit is reached">PARTITION_HEAP_LRU</option>
+                        </select>
+                        <div id="regionTypeDesc" class="region-type-desc"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Create</button>
+                        <button type="button" class="btn-secondary" id="cancelCreateBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>
